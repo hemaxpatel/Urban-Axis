@@ -20,6 +20,8 @@ function Chat({ chats }) {
   }, [chat]);
 
   const handleOpenChat = async (id, receiver) => {
+    if (!receiver) return;
+
     try {
       const res = await apiRequest("/chats/" + id);
       if (!res.data.seenBy.includes(currentUser.id)) {
@@ -33,6 +35,8 @@ function Chat({ chats }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!chat?.receiver) return;
 
     const formData = new FormData(e.target);
     const text = formData.get("text");
@@ -77,29 +81,32 @@ function Chat({ chats }) {
     <div className="chat">
       <div className="messages">
         <h1>Messages</h1>
-        {chats?.map((c) => (
-          <div
-            className="message"
-            key={c.id}
-            style={{
-              backgroundColor:
-                c.seenBy.includes(currentUser.id) || chat?.id === c.id
-                  ? "white"
-                  : "#fecd514e",
-            }}
-            onClick={() => handleOpenChat(c.id, c.receiver)}
-          >
-            <img src={c.receiver.avatar || "/noavatar.jpg"} alt="" />
-            <span>{c.receiver.username}</span>
-            <p>{c.lastMessage}</p>
-          </div>
-        ))}
+        {chats?.map(
+          (c) =>
+            c.receiver && (
+              <div
+                className="message"
+                key={c.id}
+                style={{
+                  backgroundColor:
+                    c.seenBy.includes(currentUser.id) || chat?.id === c.id
+                      ? "white"
+                      : "#fecd514e",
+                }}
+                onClick={() => handleOpenChat(c.id, c.receiver)}
+              >
+                <img src={c.receiver.avatar || "/noavatar.jpg"} alt="" />
+                <span>{c.receiver.username}</span>
+                <p>{c.lastMessage}</p>
+              </div>
+            )
+        )}
       </div>
-      {chat && (
+      {chat && chat.receiver && (
         <div className="chatBox">
           <div className="top">
             <div className="user">
-              <img src={chat.receiver.avatar || "noavatar.jpg"} alt="" />
+              <img src={chat.receiver.avatar || "/noavatar.jpg"} alt="" />
               {chat.receiver.username}
             </div>
             <span className="close" onClick={() => setChat(null)}>

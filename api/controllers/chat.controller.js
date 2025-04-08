@@ -15,17 +15,21 @@ export const getChats = async (req, res) => {
     for (const chat of chats) {
       const receiverId = chat.userIDs.find((id) => id !== tokenUserId);
 
-      const receiver = await prisma.user.findUnique({
-        where: {
-          id: receiverId,
-        },
-        select: {
-          id: true,
-          username: true,
-          avatar: true,
-        },
-      });
-      chat.receiver = receiver;
+      if (receiverId) {
+        const receiver = await prisma.user.findUnique({
+          where: {
+            id: receiverId,
+          },
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+          },
+        });
+        chat.receiver = receiver;
+      } else {
+        chat.receiver = null;
+      }
     }
 
     res.status(200).json(chats);
@@ -90,7 +94,7 @@ export const addChat = async (req, res) => {
 export const readChat = async (req, res) => {
   const tokenUserId = req.userId;
 
-  
+
   try {
     const chat = await prisma.chat.update({
       where: {

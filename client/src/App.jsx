@@ -8,7 +8,14 @@ import Login from "./routes/login/login";
 import Register from "./routes/register/register";
 import ProfileUpdatePage from "./routes/profileUpdatePage/profileUpdatePage";
 import NewPostPage from "./routes/newPostPage/newPostPage";
-import { listPageLoader, profilePageLoader, singlePageLoader } from "./lib/loaders";
+import About from "./routes/about/about";
+import Agents from "./routes/agents/agents";
+import Contact from "./routes/contact/contact";
+import {
+  listPageLoader,
+  profilePageLoader,
+  singlePageLoader,
+} from "./lib/loaders";
 
 function App() {
   const router = createBrowserRouter([
@@ -17,27 +24,38 @@ function App() {
       element: <Layout />,
       children: [
         {
-          path: "/",
+          index: true,
           element: <HomePage />,
         },
         {
-          path: "/list",
+          path: "list",
           element: <ListPage />,
           loader: listPageLoader,
         },
         {
-          path: "/:id",
-          element: <SinglePage />,
-          loader: singlePageLoader,
+          path: "about",
+          element: <About />,
         },
-
         {
-          path: "/login",
+          path: "contact",
+          element: <Contact />,
+        },
+        {
+          path: "agents",
+          element: <Agents />,
+        },
+        {
+          path: "login",
           element: <Login />,
         },
         {
-          path: "/register",
+          path: "register",
           element: <Register />,
+        },
+        {
+          path: "post/:id",
+          element: <SinglePage />,
+          loader: singlePageLoader,
         },
       ],
     },
@@ -46,16 +64,16 @@ function App() {
       element: <RequireAuth />,
       children: [
         {
-          path: "/profile",
+          path: "profile",
           element: <ProfilePage />,
-          loader: profilePageLoader
+          loader: profilePageLoader,
         },
         {
-          path: "/profile/update",
+          path: "profile/update",
           element: <ProfileUpdatePage />,
         },
         {
-          path: "/add",
+          path: "add",
           element: <NewPostPage />,
         },
       ],

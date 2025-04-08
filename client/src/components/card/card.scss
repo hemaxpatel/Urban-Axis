@@ -92,9 +92,19 @@
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: all 0.3s ease;
 
           &:hover {
             background-color: lightgray;
+          }
+
+          &.saved {
+            background-color: #1e88e5;
+            border-color: #1e88e5;
+            
+            &:hover {
+              background-color: #1976d2;
+            }
           }
         }
       }

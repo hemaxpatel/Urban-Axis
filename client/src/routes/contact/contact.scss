@@ -1,0 +1,166 @@
+.contact {
+  padding: 40px 0;
+  background-color: #f8f9fa;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+
+    h1 {
+      font-size: 2.5rem;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+  }
+
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    margin-bottom: 60px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact-info {
+    .info-card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+
+      h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+      }
+
+      p {
+        color: #666;
+        margin-bottom: 5px;
+        font-size: 1rem;
+      }
+
+      .social-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        a {
+          color: #2c3e50;
+          text-decoration: none;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: #fece51;
+          }
+        }
+      }
+    }
+  }
+
+  .contact-form {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: 500;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #fece51;
+        }
+      }
+
+      textarea {
+        height: 150px;
+        resize: vertical;
+      }
+    }
+
+    button {
+      background-color: #fece51;
+      color: #2c3e50;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #fecd51;
+      }
+    }
+  }
+
+  .map-section {
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+      text-align: center;
+    }
+
+    .map-container {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .contact {
+    padding: 20px 0;
+
+    .header {
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    .contact-form {
+      padding: 20px;
+    }
+  }
+} 

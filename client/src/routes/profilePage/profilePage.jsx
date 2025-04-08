@@ -3,15 +3,29 @@ import List from "../../components/list/List";
 import "./profilePage.scss";
 import apiRequest from "../../lib/apiRequest";
 import { Await, Link, useLoaderData, useNavigate } from "react-router-dom";
-import { Suspense, useContext } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 function ProfilePage() {
   const data = useLoaderData();
-
+  const [chats, setChats] = useState([]);
   const { updateUser, currentUser } = useContext(AuthContext);
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const res = await apiRequest("/chats");
+        setChats(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    if (currentUser) {
+      fetchChats();
+    }
+  }, [currentUser]);
 
   const handleLogout = async () => {
     try {
@@ -22,6 +36,7 @@ function ProfilePage() {
       console.log(err);
     }
   };
+
   return (
     <div className="profilePage">
       <div className="details">
@@ -51,7 +66,10 @@ function ProfilePage() {
               <button>Create New Post</button>
             </Link>
           </div>
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense
+            fallback="Loading, please wait..."
+            fallbackElement={<p>Loading...</p>}
+          >
             <Await
               resolve={data.postResponse}
               errorElement={<p>Error loading posts!</p>}
@@ -79,7 +97,7 @@ function ProfilePage() {
               resolve={data.chatResponse}
               errorElement={<p>Error loading chats!</p>}
             >
-              {(chatResponse) => <Chat chats={chatResponse.data}/>}
+              {(chatResponse) => <Chat chats={chatResponse.data} />}
             </Await>
           </Suspense>
         </div>

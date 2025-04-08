@@ -26,18 +26,35 @@ const getUser = (userId) => {
 };
 
 io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
   socket.on("newUser", (userId) => {
     addUser(userId, socket.id);
+    console.log("New user added:", userId);
   });
 
   socket.on("sendMessage", ({ receiverId, data }) => {
     const receiver = getUser(receiverId);
-    io.to(receiver.socketId).emit("getMessage", data);
+    if (receiver) {
+      io.to(receiver.socketId).emit("getMessage", data);
+      console.log("Message sent to:", receiverId);
+    } else {
+      // Emit back to sender that receiver is offline
+      socket.emit("receiverOffline", { receiverId });
+      console.log("Receiver offline:", receiverId);
+    }
   });
 
   socket.on("disconnect", () => {
     removeUser(socket.id);
+    console.log("User disconnected:", socket.id);
   });
 });
 
-io.listen("4000");
+const PORT = process.env.SOCKET_PORT || 4000;
+io.listen(PORT, () => {
+  console.log(`Socket server running on port ${PORT}`);
+});
+
+export { io };
+

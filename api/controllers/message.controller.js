@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import { io } from "../app.js";
 
 export const addMessage = async (req, res) => {
   const tokenUserId = req.userId;
@@ -12,6 +13,9 @@ export const addMessage = async (req, res) => {
         userIDs: {
           hasSome: [tokenUserId],
         },
+      },
+      include: {
+        messages: true,
       },
     });
 
@@ -33,6 +37,16 @@ export const addMessage = async (req, res) => {
         seenBy: [tokenUserId],
         lastMessage: text,
       },
+    });
+
+    // Get the receiver's ID
+    const receiverId = chat.userIDs.find((id) => id !== tokenUserId);
+
+    // Emit the message through socket
+    io.emit("newMessage", {
+      chatId,
+      message,
+      receiverId,
     });
 
     res.status(200).json(message);

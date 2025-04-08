@@ -3,15 +3,33 @@ import Slider from "../../components/slider/Slider";
 import Map from "../../components/map/Map";
 import { useNavigate, useLoaderData } from "react-router-dom";
 import DOMPurify from "dompurify";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest";
+import Chat from "../../components/chat/Chat";
 
 function SinglePage() {
   const post = useLoaderData();
   const [saved, setSaved] = useState(post.isSaved);
+  const [chats, setChats] = useState([]);
+  const [showChat, setShowChat] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const res = await apiRequest("/chats");
+        setChats(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    if (currentUser) {
+      fetchChats();
+    }
+  }, [currentUser]);
 
   const handleSave = async () => {
     if (!currentUser) {
@@ -24,6 +42,57 @@ function SinglePage() {
     } catch (err) {
       console.log(err);
       setSaved((prev) => !prev);
+    }
+  };
+
+  const handleMessage = async () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      console.log("Post data:", post);
+      console.log("Post user:", post.user);
+      console.log("Current user:", currentUser);
+
+      if (!post.user || !post.user.id) {
+        console.error("Invalid post user data");
+        return;
+      }
+
+      // Prevent messaging yourself
+      if (post.user.id === currentUser.id) {
+        alert("You cannot message yourself");
+        return;
+      }
+
+      // Check if chat already exists
+      const existingChat = chats.find((chat) =>
+        chat.userIDs.includes(post.user.id)
+      );
+
+      if (existingChat) {
+        setShowChat(true);
+        return;
+      }
+
+      // Create new chat
+      const res = await apiRequest.post("/chats", {
+        receiverId: post.user.id,
+      });
+
+      // Fetch updated chats list
+      const updatedChats = await apiRequest("/chats");
+      setChats(updatedChats.data);
+      setShowChat(true);
+    } catch (err) {
+      console.log("Error creating chat:", err);
+      if (err.response?.status === 500) {
+        alert("Failed to create chat. Please try again later.");
+      } else {
+        alert("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -139,7 +208,7 @@ function SinglePage() {
             <Map items={[post]} />
           </div>
           <div className="buttons">
-            <button>
+            <button onClick={handleMessage}>
               <img src="/chat.png" alt="" />
               Send a Message
             </button>
@@ -155,6 +224,7 @@ function SinglePage() {
           </div>
         </div>
       </div>
+      {showChat && <Chat chats={chats} />}
     </div>
   );
 }
