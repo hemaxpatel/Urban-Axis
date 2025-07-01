@@ -59,7 +59,8 @@ export const getPost = async (req, res) => {
         });
         return res.status(200).json({ ...post, isSaved: saved ? true : false });
       } catch (err) {
-        // If token verification fails, continue with default response
+        console.log(err);
+        return res.status(200).json({ ...post, isSaved: false });
       }
     }
 
